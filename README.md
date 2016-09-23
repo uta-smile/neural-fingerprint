@@ -17,7 +17,7 @@ David Duvenaud, Dougal Maclaurin, Jorge Aguilera-Iparraguirre, Rafael Gómez-Bom
 ## How to install
 
 This package requires:
-* Scipy version >= 0.15.0
+* Scipy version >= 0.15.0  (For Anaconda users, use `conda install scipy` instead of `pip install scipy` to upgrade your version.)
 * [RDkit](http://www.rdkit.org/docs/Install.html)
 * [Autograd](http:github.com/HIPS/autograd) (Just run `pip install autograd`)
 
