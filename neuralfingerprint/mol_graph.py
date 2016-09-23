@@ -2,7 +2,7 @@ import numpy as np
 from rdkit.Chem import MolFromSmiles
 from features import atom_features, bond_features
 
-degrees = [0, 1, 2, 3, 4, 5]
+degrees = [0, 1, 2, 3, 4, 5, 6]
 
 class MolGraph(object):
     def __init__(self):
