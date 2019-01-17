@@ -20,7 +20,7 @@ This package requires:
 * Scipy version >= 0.15.0  (For Anaconda users, use `conda install scipy` instead of `pip install scipy` to upgrade your version.)
 * [RDkit](http://www.rdkit.org/docs/Install.html)
 * [Autograd](http:github.com/HIPS/autograd) (Just run `pip install autograd`)
-
+* smile (run `pip install smile`)
 ## Examples
 
 This package includes a [regression example](examples/regression.py) and a [visualization example](examples/visualization.py) in the examples directory.
