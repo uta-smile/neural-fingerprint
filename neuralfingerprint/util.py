@@ -76,10 +76,10 @@ def normalize_array(A):
     A_normed = (A - mean) / std
 
     def restore_function(X):
-        # return X * std + mean
+        # return X * std + mean # normelized
         return X
 
-    # return A_normed, restore_function
+    # return A_normed, restore_function # normelized
     return A, restore_function
 
 

@@ -15,19 +15,10 @@ def read_csv(filename, input_name, target_name):
 
 
 def load_data(filename, input_name, target_name):
-    # slices = []
-    # start = 0
-    # for size in sizes:
-    #     stop = start + size
-    #     slices.append(slice(start, stop))
-    #     start = stop
     return load_data_slices_nolist(filename, input_name, target_name)
 
 
 def load_data_slices_nolist(filename, input_name, target_name):
-    # stops = [s.stop for s in slices]
-    # if not all(stops):
-    #     raise Exception("Slices can't be open-ended")
     train_file = filename[0]
     val_file = filename[1]
     test_file = filename[2]

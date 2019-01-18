@@ -69,12 +69,7 @@ class Node(object):
 
 
 def graph_from_smiles_tuple(smiles_tuple):
-    graph_list = []
     graph_list = [graph_from_smiles(s) for s in smiles_tuple]
-    # for s in smiles_tuple:
-    #     if graph_from_smiles(s) is not None:
-    #         graph_list.append(graph_from_smiles(s))
-            
     graph_list = [x for x in graph_list if x]
     big_graph = MolGraph()
     for subgraph in graph_list:
@@ -89,7 +84,6 @@ def graph_from_smiles(smiles):
     graph = MolGraph()
     mol = MolFromSmiles(smiles)
     if not mol:
-        # return None
         raise ValueError("Could not parse SMILES string:", smiles)
     atoms_by_rd_idx = {}
     for atom in mol.GetAtoms():

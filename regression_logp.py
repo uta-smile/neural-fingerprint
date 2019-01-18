@@ -17,8 +17,10 @@ from neuralfingerprint.util import rmse
 
 from autograd import grad
 
-flags.DEFINE_string("data_path","/home/xiaozhi/datasets/drugs/clean_17p_v1_splited/","cleaned data folder path")
-flags.DEFINE_integer("i",0,"from 0 to 16")
+flags.DEFINE_string("data_path",
+                    "/home/xiaozhi/datasets/drugs/clean_17p_v1_splited/",
+                    "cleaned data folder path")
+flags.DEFINE_integer("i", 0, "from 0 to 16")
 FLAGS = flags.FLAGS
 
 data_path = FLAGS.data_path
@@ -41,7 +43,10 @@ model_params = dict(
     h1_size=250,  # Size of hidden layer of network on top of fps.
     L2_reg=np.exp(-2))
 train_params = dict(
-    num_iters=32*50, batch_size=32, init_scale=np.exp(-4), step_size=np.exp(-6))
+    num_iters=32 * 50,
+    batch_size=32,
+    init_scale=np.exp(-4),
+    step_size=np.exp(-6))
 
 # Define the architecture of the network that sits on top of the fingerprints.
 vanilla_net_params = dict(
@@ -84,8 +89,12 @@ def train_nn(pred_fun,
             if validation_smiles is not None:
                 validation_preds = undo_norm(
                     pred_fun(weights, validation_smiles))
-                print("Validation RMSE", iter, ":", rmse(
-                    validation_preds, validation_raw_targets),)
+                print(
+                    "Validation RMSE",
+                    iter,
+                    ":",
+                    rmse(validation_preds, validation_raw_targets),
+                )
 
     # Build gradient using autograd.
     grad_fun = grad(loss_fun)
