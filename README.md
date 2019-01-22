@@ -22,6 +22,11 @@ This package requires:
 * [Autograd](http:github.com/HIPS/autograd) (Just run `pip install autograd`)
 * [Smile](https://github.com/uta-smile/smile-python) (Just run `pip install smile`)
 
+## How to run
+* `python regression.py data_path='/smile/nfs/hm/17properties_datasets/17p_v1/single_property_xiaozhi/clean_17p_v1_splited' i=0`
+* data_path: Make sure there are three subfolders under the target data_path named train, val and test. if you mounted the nfs, please try this data_path: `/smile/nfs/hm/17properties_datasets/17p_v1/single_property_xiaozhi/clean_17p_v1_splited`
+* i: in this case, i is the number of 17 properties (pgp,solub,logp,2c9,2d6,2c19,rlm,mmp,ames,pldc,heptox,3a4,pampac,pampar,herg,1a2,vd), from 0 to 16
+
 ## Examples
 
 This package includes a [regression example](examples/regression.py) and a [visualization example](examples/visualization.py) in the examples directory.

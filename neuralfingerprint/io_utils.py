@@ -15,18 +15,38 @@ def read_csv(filename, input_name, target_name):
 
 
 def load_data(filename, input_name, target_name):
-    return load_data_slices_nolist(filename, input_name, target_name)
+    if len(filename) == 3:
+        return load_data_slices_islist(filename, input_name, target_name)
+    else:
+        raise Exception("Please make sure the filename contains three ones.")
+    # slices = []	
+    # start = 0	
+    # for size in sizes:	
+    #     stop = start + size	
+    #     slices.append(slice(start, stop))	
+    #     start = stop
+    # return load_data_slices_nolist(filename, slices, input_name, target_name)
+
+    
 
 
-def load_data_slices_nolist(filename, input_name, target_name):
+def load_data_slices_islist(filename, input_name, target_name):
     train_file = filename[0]
     val_file = filename[1]
     test_file = filename[2]
-    data0 = read_csv(train_file, input_name, target_name)
-    data1 = read_csv(val_file, input_name, target_name)
-    data2 = read_csv(test_file, input_name, target_name)
-    return [(data0[0], data0[1]), (data1[0], data1[1]), (data2[0], data2[1])]
+    train_data = read_csv(train_file, input_name, target_name)
+    val_data = read_csv(val_file, input_name, target_name)
+    test_data = read_csv(test_file, input_name, target_name)
+    return [(train_data[0], train_data[1]), (val_data[0], val_data[1]), (test_data[0], test_data[1])]
 
+def load_data_slices_nolist(filename, slices, input_name, target_name):	
+    stops = [s.stop for s in slices]	
+    if not all(stops):	
+        raise Exception("Slices can't be open-ended")	
+
+
+    data = read_csv(filename, max(stops), input_name, target_name)	
+    return [(data[0][s], data[1][s]) for s in slices]
 
 def list_concat(lists):
     return list(it.chain(*lists))

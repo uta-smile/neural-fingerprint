@@ -18,21 +18,21 @@ from neuralfingerprint.util import rmse
 from autograd import grad
 
 flags.DEFINE_string("data_path",
-                    "/home/xiaozhi/datasets/drugs/clean_17p_v1_splited/",
+                    "/smile/nfs/hm/17properties_datasets/17p_v1/single_property_xiaozhi/clean_17p_v1_splited",
                     "cleaned data folder path")
 flags.DEFINE_integer("i", 0, "from 0 to 16")
 FLAGS = flags.FLAGS
 
 data_path = FLAGS.data_path
-pi = FLAGS.i
+p_i = FLAGS.i
 
 task_params = {
     'target_name':
-    'p{}'.format(pi),
+    'p{}'.format(p_i),
     'data_file': [
-        os.path.join(data_path, "{}/{}_p{}.csv".format("train", "train", pi)),
-        os.path.join(data_path, "{}/{}_p{}.csv".format("val", "val", pi)),
-        os.path.join(data_path, "{}/{}_p{}.csv".format("test", "test", pi))
+        os.path.join(data_path, "{}/{}_p{}.csv".format("train", "train", p_i)),
+        os.path.join(data_path, "{}/{}_p{}.csv".format("val", "val", p_i)),
+        os.path.join(data_path, "{}/{}_p{}.csv".format("test", "test", p_i))
     ]
 }
 
@@ -170,7 +170,7 @@ def main(_):
     test_loss_neural = run_conv_experiment()
     print()
     #print("Morgan test RMSE:", test_loss_morgan, "Neural test RMSE:", test_loss_neural)
-    print("{} Neural test RMSE:".format(pi), test_loss_neural)
+    print("{} Neural test RMSE:".format(p_i), test_loss_neural)
 
 
 if __name__ == '__main__':
