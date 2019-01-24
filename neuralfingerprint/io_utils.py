@@ -19,13 +19,6 @@ def load_data(filename, input_name, target_name):
         return load_data_slices_islist(filename, input_name, target_name)
     else:
         raise Exception("Please make sure the filename contains three ones.")
-    # slices = []	
-    # start = 0	
-    # for size in sizes:	
-    #     stop = start + size	
-    #     slices.append(slice(start, stop))	
-    #     start = stop
-    # return load_data_slices_nolist(filename, slices, input_name, target_name)
 
     
 
