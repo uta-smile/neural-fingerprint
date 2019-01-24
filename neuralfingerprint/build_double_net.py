@@ -1,12 +1,12 @@
-from util import memoize, WeightsParser
-from rdkit_utils import smiles_to_fps
-from build_convnet import build_convnet_fingerprint_fun
-from build_vanilla_net import build_fingerprint_deep_net
+from .util import memoize, WeightsParser
+from .rdkit_utils import smiles_to_fps
+from .build_convnet import build_convnet_fingerprint_fun
+from .build_vanilla_net import build_fingerprint_deep_net
 
 import autograd.numpy as np
 
-def build_double_morgan_fingerprint_fun(fp_length=512, fp_radius=4):
 
+def build_double_morgan_fingerprint_fun(fp_length=512, fp_radius=4):
     def fingerprints_from_smiles(weights, smiles_tuple):
         smiles1, smiles2 = zip(*smiles_tuple)
         # Morgan fingerprints don't use weights.
@@ -14,7 +14,7 @@ def build_double_morgan_fingerprint_fun(fp_length=512, fp_radius=4):
         fp_array_2 = fingerprints_from_smiles_tuple(tuple(smiles2))
         return np.concatenate([fp_array_1, fp_array_2], axis=1)
 
-    @memoize # This wrapper function exists because tuples can be hashed, but arrays can't.
+    @memoize  # This wrapper function exists because tuples can be hashed, but arrays can't.
     def fingerprints_from_smiles_tuple(smiles_tuple):
         return smiles_to_fps(smiles_tuple, fp_length, fp_radius)
 
@@ -24,7 +24,8 @@ def build_double_morgan_fingerprint_fun(fp_length=512, fp_radius=4):
 def build_double_morgan_deep_net(fp_length, fp_depth, net_params):
     empty_parser = WeightsParser()
     morgan_fp_func = build_double_morgan_fingerprint_fun(fp_length, fp_depth)
-    return build_fingerprint_deep_net(net_params, morgan_fp_func, empty_parser, 0)
+    return build_fingerprint_deep_net(net_params, morgan_fp_func, empty_parser,
+                                      0)
 
 
 def build_double_convnet_fingerprint_fun(**kwargs):
@@ -47,6 +48,7 @@ def build_double_convnet_fingerprint_fun(**kwargs):
 
 def build_double_conv_deep_net(conv_params, net_params, fp_l2_penalty=0.0):
     """Returns loss_fun(all_weights, smiles, targets), pred_fun, combined_parser."""
-    conv_fp_func, conv_parser = build_double_convnet_fingerprint_fun(**conv_params)
-    return build_fingerprint_deep_net(net_params, conv_fp_func, conv_parser, fp_l2_penalty)
-
+    conv_fp_func, conv_parser = build_double_convnet_fingerprint_fun(
+        **conv_params)
+    return build_fingerprint_deep_net(net_params, conv_fp_func, conv_parser,
+                                      fp_l2_penalty)

@@ -1,25 +1,31 @@
 import autograd.numpy as np
 
-from util import memoize, WeightsParser
-from rdkit_utils import smiles_to_fps
+from .util import memoize, WeightsParser
+from .rdkit_utils import smiles_to_fps
 
 
 def batch_normalize(activations):
     mbmean = np.mean(activations, axis=0, keepdims=True)
-    return (activations - mbmean) / (np.std(activations, axis=0, keepdims=True) + 1)
+    return (activations - mbmean) / (
+        np.std(activations, axis=0, keepdims=True) + 1)
+
 
 def relu(X):
     "Rectified linear activation function."
     return X * (X > 0)
 
+
 def sigmoid(x):
-    return 0.5*(np.tanh(x) + 1)
+    return 0.5 * (np.tanh(x) + 1)
+
 
 def mean_squared_error(predictions, targets):
     return np.mean((predictions - targets)**2, axis=0)
 
+
 def categorical_nll(predictions, targets):
     return -np.mean(predictions * targets)
+
 
 def binary_classification_nll(predictions, targets):
     """Predictions is a real number, whose sigmoid is the probability that
@@ -28,7 +34,12 @@ def binary_classification_nll(predictions, targets):
     label_probabilities = pred_probs * targets + (1 - pred_probs) * (1 - targets)
     return -np.mean(np.log(label_probabilities))
 
-def build_standard_net(layer_sizes, normalize, L2_reg, L1_reg=0.0, activation_function=relu,
+
+def build_standard_net(layer_sizes,
+                       normalize,
+                       L2_reg,
+                       L1_reg=0.0,
+                       activation_function=relu,
                        nll_func=mean_squared_error):
     """Just a plain old neural net, nothing to do with molecules.
     layer sizes includes the input size."""
@@ -53,25 +64,28 @@ def build_standard_net(layer_sizes, normalize, L2_reg, L1_reg=0.0, activation_fu
 
     def loss(w, X, targets):
         assert len(w) > 0
-        log_prior = -L2_reg * np.dot(w, w) / len(w) - L1_reg * np.mean(np.abs(w))
+        log_prior = -L2_reg * np.dot(w, w) / len(w) - L1_reg * np.mean(
+            np.abs(w))
         preds = predictions(w, X)
         return nll_func(preds, targets) - log_prior
 
     return loss, predictions, parser
 
 
-def build_fingerprint_deep_net(net_params, fingerprint_func, fp_parser, fp_l2_penalty):
+def build_fingerprint_deep_net(net_params, fingerprint_func, fp_parser,
+                               fp_l2_penalty):
     """Composes a fingerprint function with signature (smiles, weights, params)
      with a fully-connected neural network."""
     net_loss_fun, net_pred_fun, net_parser = build_standard_net(**net_params)
 
     combined_parser = WeightsParser()
-    combined_parser.add_weights('fingerprint weights', (len(fp_parser),))
-    combined_parser.add_weights('net weights', (len(net_parser),))
+    combined_parser.add_weights('fingerprint weights', (len(fp_parser), ))
+    combined_parser.add_weights('net weights', (len(net_parser), ))
 
     def unpack_weights(weights):
-        fingerprint_weights = combined_parser.get(weights, 'fingerprint weights')
-        net_weights         = combined_parser.get(weights, 'net weights')
+        fingerprint_weights = combined_parser.get(weights,
+                                                  'fingerprint weights')
+        net_weights = combined_parser.get(weights, 'net weights')
         return fingerprint_weights, net_weights
 
     def loss_fun(weights, smiles, targets):
@@ -92,29 +106,34 @@ def build_fingerprint_deep_net(net_params, fingerprint_func, fp_parser, fp_l2_pe
 
 
 def build_morgan_fingerprint_fun(fp_length=512, fp_radius=4):
-
     def fingerprints_from_smiles(weights, smiles):
         # Morgan fingerprints don't use weights.
         return fingerprints_from_smiles_tuple(tuple(smiles))
 
-    @memoize # This wrapper function exists because tuples can be hashed, but arrays can't.
+    @memoize  # This wrapper function exists because tuples can be hashed, but arrays can't.
     def fingerprints_from_smiles_tuple(smiles_tuple):
         return smiles_to_fps(smiles_tuple, fp_length, fp_radius)
 
     return fingerprints_from_smiles
 
+
 def build_morgan_deep_net(fp_length, fp_depth, net_params):
     empty_parser = WeightsParser()
     morgan_fp_func = build_morgan_fingerprint_fun(fp_length, fp_depth)
-    return build_fingerprint_deep_net(net_params, morgan_fp_func, empty_parser, 0)
+    return build_fingerprint_deep_net(net_params, morgan_fp_func, empty_parser,
+                                      0)
+
 
 def build_mean_predictor(loss_func):
     parser = WeightsParser()
-    parser.add_weights('mean', (1,))
+    parser.add_weights('mean', (1, ))
+
     def loss_fun(weights, smiles, targets):
         mean = parser.get(weights, 'mean')
         return loss_func(np.full(targets.shape, mean), targets)
+
     def pred_fun(weights, smiles):
         mean = parser.get(weights, 'mean')
-        return np.full((len(smiles),), mean)
+        return np.full((len(smiles), ), mean)
+
     return loss_fun, pred_fun, parser
