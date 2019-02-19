@@ -160,6 +160,11 @@ def main(_):
             train_nn(pred_fun, loss_fun, num_weights, train_inputs, train_targets,
                      train_params, validation_smiles=val_inputs, validation_raw_targets=val_targets)
         test_predictions = predict_func(test_inputs)
+        import pickle
+        pickle.dump({
+            "predict": test_predictions,
+            "target": test_targets
+        }, open("nci_p{}.pickle".format(p_i), "wb"))
         return rmse(test_predictions, test_targets)
 
     print("Task params", task_params)
